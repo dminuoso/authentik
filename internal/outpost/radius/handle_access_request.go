@@ -13,12 +13,20 @@ import (
 )
 
 func (rs *RadiusServer) Handle_AccessRequest_PAP_Auth(r *RadiusRequest, username, password string) (*radius.Packet, error) {
+	ip := rfc2865.FramedIPAddress_Get(r.Packet)
+	var ipStr string
+	if ip != nil {
+		ipStr = ip.String()
+	} else {
+		ipStr = r.RemoteAddr()
+    }
+
 	fe := flow.NewFlowExecutor(r.Context(), r.pi.flowSlug, r.pi.s.ac.Client.GetConfig(), log.Fields{
 		"username":  username,
-		"client":    r.RemoteAddr(),
+		"client":    ipStr,
 		"requestId": r.ID(),
 	})
-	fe.DelegateClientIP(r.RemoteAddr())
+	fe.DelegateClientIP(ipStr)
 	fe.Params.Add("goauthentik.io/outpost/radius", "true")
 
 	fe.Answers[flow.StageIdentification] = username
