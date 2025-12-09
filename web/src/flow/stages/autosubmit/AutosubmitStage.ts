@@ -25,8 +25,24 @@ export class AutosubmitStage extends BaseStage<
 
     static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
+    connectedCallback(): void {
+        super.connectedCallback();
+        console.log("authentik/flow/stages/autosubmit: ak-stage-autosubmit connected", this);
+    }
+
+    disconnectedFallback(): void {
+        super.disconnectedFallback();
+        console.log("authentik/flow/stages/autosubmit: ak-stage-autosubmit disconnected", this);
+    }
+
+    updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+        console.log("authentik/flow/stages/autosubmit: ak-stage-autosubmit updated", changed, this);
+    }
+
     firstUpdated(changed: PropertyValues<this>): void {
         super.firstUpdated(changed);
+        console.log("authentik/flow/stages/autosubmit: ak-stage-autosubmit firstUpdated", changed, this);
 
         if (this.challenge.url !== undefined) {
             console.debug("authentik/flow/stages/autosubmit: submitting");
